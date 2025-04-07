@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Summarizer</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dark-theme.css') }}">
+</head>
+<body>
+    <h1>News Article Summarizer</h1>
+
+    <form action="/summarize" method="post">
+        <input type="text" name="url" placeholder="Enter News Article URL" required>
+        
+        <label for="summary_length">Summary Length:</label>
+        <select name="summary_length">
+            <option value="short">Short</option>
+            <option value="medium" selected>Medium</option>
+            <option value="long">Long</option>
+        </select>
+
+
+        <button type="submit">Summarize</button>
+    </form>
+
+    {% if summary %}
+    <h2>Summary:</h2>
+    <p>{{ summary }}</p>
+
+    <h3>Details:</h3>
+    <p><strong>Author:</strong> {{ authors }}</p>
+    <p><strong>Published Date:</strong> {{ publish_date }}</p>
+    <p><strong>Sentiment:</strong> {{ sentiment }}</p>
+
+    <h3>Text-to-Speech:</h3>
+    <audio controls>
+        <source src="{{ url_for('static', filename='summary_audio.mp3') }}?t={{ time }}" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+{% endif %}
+
+{% if rouge_scores %}
+    <h3>ROUGE Scores:</h3>
+    <ul>
+        <li>ROUGE-1: {{ rouge_scores["ROUGE-1"] | round(4) }}</li>
+        <li>ROUGE-2: {{ rouge_scores["ROUGE-2"] | round(4) }}</li>
+        <li>ROUGE-L: {{ rouge_scores["ROUGE-L"] | round(4) }}</li>
+    </ul>
+{% endif %}
+
+</body>
+</html>
